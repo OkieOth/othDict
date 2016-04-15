@@ -1,0 +1,22 @@
+@startuml
+class Language {
+    short_name
+    descr
+}
+
+class App {
+    short_name
+    descr
+}
+
+class DictEntry {
+    language_id
+    resource_id
+    text
+    status
+}
+
+Language "1" -- "0..n" DictEntry
+App "m" -- "n" DictEntry
+
+@enduml

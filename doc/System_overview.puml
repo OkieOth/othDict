@@ -1,0 +1,42 @@
+@startuml
+
+node "Management client" {
+    [dictManageGui]
+    note top
+        Frontend to create and
+        translate dictionaries
+    end note
+}
+
+node "Other clients" {
+    [dictServerConnect]
+    note top
+        server apps can use
+        this to request resource
+        strings
+    end note
+    [dictJSConnect]
+    note top
+        HTML pages can use
+        this to request resource
+        strings
+    end note
+}
+
+node "dict-server" {
+    folder "rest services" {
+        [dictManageRest]
+        [dictRest]
+    }
+
+    database  {
+        [oth_dictdb]
+    }
+
+    dictRest - oth_dictdb
+    dictManageRest - oth_dictdb
+    dictManageGui - dictManageRest
+    dictJSConnect - dictRest
+    dictServerConnect - dictRest
+}
+@enduml
