@@ -1,0 +1,43 @@
+@startuml
+class Dictionary {
+}
+note right
+ simple
+ Container
+end note
+
+class DictEntry {
+}
+note bottom
+ a entry to
+ translate
+end note
+
+class Application {
+}
+note left
+ all applications that
+ use the resource service
+end note
+
+class AppDictEntry {
+}
+note left
+ a spezific dict entry
+ for a spezific application
+end note
+
+
+
+class Language {
+    String shortName;
+    boolean defaultLanguage;
+}
+
+AppDictEntry "0..n" -- "1" Application
+DictEntry "n" -- "1" Language
+AppDictEntry "n" -- "m" DictEntry
+Language "n" -- "1" Dictionary
+DictEntry "n" -- "1" Dcitonary
+
+@enduml

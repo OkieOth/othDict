@@ -62,126 +62,65 @@ class OthDictDbModel extends DataModel {
     OthDictDbModel () {
         // Der Name des Modell ergibt sich aus dem Namen der Klasse
         version=1
-        shortName='rman'
+        shortName='dict'
         
         defaultTypes=[
                 'name' : AttribType.t_string,
-                'bemerkung' : AttribType.t_string,
-                'von' : AttribType.t_date,
-                'bis' : AttribType.t_date,
-                'seit' : AttribType.t_date,
-                'datum' : AttribType.t_date,
-                'aktiv' : AttribType.t_boolean,
-                'preis' : AttribType.t_money,
-                'art' : AttribType.t_str_list,
-                'prozent' : AttribType.t_prozent
+                'descr' : AttribType.t_string,
+                'id_str' : AttribType.t_string,
                 ]
         
-        entity ( name:'Termin').
-                descr = 'Alle gespeicherten Termine'
-            attrib ( name:'von', type:AttribType.t_timestamp )
-            attrib ( name:'bis', type:AttribType.t_timestamp )            
-            attrib ( name:'bemerkung' )
-            attrib ( name:'periode', type:AttribType.t_str_list )
-            ref ( refName:'Kunde' )
-        
-        entity ( name:'TerminResource').
-                descr = 'Welche Resourcen werden mit diesem Termin gebunden'
-            attrib ( name:'bemerkung' )
-            ref ( refName:'Termin' )
-            ref ( refName:'Resource' )
-
-        entity ( name:'Kunde').
-                descr = 'Eine Person die eine Resource belegen kann'
-            attrib ( name:'aktiv' )
-            attrib ( name:'seit' )
-            attrib ( name:'bemerkung' )
-            
-        entity ( name:'KundeKundenGruppe' ).
-                descr = 'Zu welchen Gruppen gehört ein Kunde'
-            // wird hier noch eine Nummer benötigt?
-            attrib ( name:'von' )
-            attrib ( name:'bis' )
-            attrib ( name:'preis' )
-            ref ( refName:'Kunde' )
-            ref ( refName:'KundenGruppe' )
-
-        entity ( name:'KundeKundenGruppeZahlung' ).
-                descr = 'Wann hat der Kunde seinen Gruppenbeitrag bezahlt'
-            attrib ( name:'datum_faellig' )
-            attrib ( name:'datum_bezahlt' )
-            attrib ( name:'datum_bezahlt_bis' )
-            attrib ( name:'preis' )
-            ref ( refName:'KundeKundenGruppe' )
-
-        entity ( name:'KundenGruppe').
-                descr = 'z.B. Clubmitglieder, 4er-Karte etc'
-            attrib ( name:'aktiv' )
+        entity ( name:'Dictionary').
+                descr = 'All saved string resources'
             attrib ( name:'name' )
-            attrib ( name:'bemerkung' )
-            attrib ( name:'termin_anzahl', type:AttribType.t_int ).
-                descr = 'gibt an zu wie vielen Terminen die bezahlte Mitgliedschaft berechtigt'
-
-        entity ( name:'KundengruppePreis').
-                descr = 'Welcher Preis muss für die Mitgliedschaft in der Gruppe bezahlt werden'
-            attrib ( name:'von' ).
-                    descr = 'von wann gilt dieser Preis'
-            attrib ( name:'bis' ).
-                    descr = 'bis wann gilt dieser Preis'
-            attrib ( name: 'preis_netto' )
-            ref ( refName:'Mehrwertsteuer' )
-
-        entity ( name:'Mehrwertsteuer')
-            attrib ( name:'von' )
-            attrib ( name:'bis' )
-            attrib ( name:'prozent' )
         
-        entity ( name:'Person')
+        entity ( name:'Application' ).
+                descr = 'what application use this string resource'
             attrib ( name:'name' )
-            attrib ( name:'zusatz', type:AttribType.t_string)
-            attrib ( name:'vorname')
-            attrib ( name:'geschlecht', type:AttribType.t_str_list)
-            attrib ( name:'geburtsdatum')
-            attrib ( name:'bemerkung' )
-        
-        entity (name:'Adresse').
-                descr = 'Adressen zu Personen'
-            attrib ( name:'land', type:AttribType.t_str_list )
-            attrib ( name:'ort', type:AttribType.t_str_list )
-            attrib ( name:'plz', type:AttribType.t_str_list )
-            attrib ( name:'str', type:AttribType.t_str_list )
-            attrib ( name:'hausnr', type:AttribType.t_string )
-            attrib ( name:'zusatz', type:AttribType.t_string )
-            attrib ( name:'bemerkung' )
-            ref ( refName:'Person' )
-            
-        entity (name:'Resource').
-                descr = 'Zu verwaltende Resource'
-            attrib ( name:'name' )
-            attrib ( name:'art' )
-            attrib ( name:'bemerkung' )
+            attrib ( name:'descr' )
+            attrib ( name:'id_str' )
+           
+        entity ( name:'AppDictEntry' ).
+                descr = 'relation between apps and dictentrys'            
+            attrib ( name:'id_str' )
+            attrib ( name:'descr' )
+            attrib ( name:'group', type:AttribType.t_str_list)
+            ref ( refName:'Application' )
 
-        entity ( name:'Feiertage').
-                descr = 'Alle relevanten Feiertage'
-            attrib ( name:'datum' )
-            attrib ( name:'name' )
-                    
-        m2nRel ( refName1:'Kunde', refName2:'Person', name: 'Ansprechpartner').
-                descr = 'Speichert wer der Ansprechpartner für einen Kunden ist'
-        
-        view ( name:'AktiveKunden').
-                descr = 'Aktive Kunden'
-            attrib ( name:'seit' )
-            attrib ( name:'bemerkung' )
-            
+
+        entity ( name:'Language' ).
+                descr = 'language of a dict entry'
+            attrib ( name:'shortName', type: AttribType.t_string )
+            attrib ( name:'descr' )
+            attrib ( name:'defaultLang', type: AttribType.t_boolean )
+
+        entity ( name:'DictEntry' ).
+                descr = 'a entry to translate'            
+            attrib ( name:'txt', type: AttribType.t_string )
+            attrib ( name:'trans_state', type:AttribType.t_str_list)
+            ref ( refName:'Language' )
+
+                               
+        m2nRel ( refName1:'DictEntry', refName2:'AppDictEntry').
+                descr = 'tells what DictEntry is used for a specific AppStringEntry-ID'
+    
+        view ( name:'LangsForApp').
+                descr = 'what languages are for a app available'
+            attrib ( name:'app_name', type: AttribType.t_string )
+            attrib ( name:'lang_shortname', type: AttribType.t_string )
+
+        view ( name:'EntryAppLang').
+                descr = 'give the entries for app and langs'
+            attrib ( name:'app_id', type:AttribType.t_string )
+            attrib ( name:'lang_shortname', type:AttribType.t_string )
+            attrib ( name:'txt', type:AttribType.t_string )
         resolveReferences()
     }
 }
 
 othCodeGen {
-//    addModel(new OthDictDbModel(),[])
-    def model = new OthDictDbModel()
-    codeGenContList = [model:[]]
+    model = new OthDictDbModel()
+    generators = ['db_psql','dao_base','dao_jdbc']
 }
 
 
@@ -199,4 +138,5 @@ dependencies {
     // You can read more about how to add dependency here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
     runtime 'de.othsoft.codeGen:gCodeGen:0.1-SNAPSHOT'
+    compile 'de.othsoft.codeGen:jJdbcDaoRequirements:0.1'
 }
