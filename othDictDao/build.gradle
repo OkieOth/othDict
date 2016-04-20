@@ -120,7 +120,7 @@ class OthDictDbModel extends DataModel {
 
 othCodeGen {
     model = new OthDictDbModel()
-    generators = ['db_psql','dao_base','dao_jdbc']
+    generators = ['db_psql','dao_base','dao_jdbc','model_puml']
 }
 
 

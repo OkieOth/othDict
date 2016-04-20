@@ -1,0 +1,103 @@
+
+@startuml
+skinparam class {
+	BackgroundColor #ffffff
+        BackgroundColor<<list>> #edfffd
+        BackgroundColor<<view>> #e7fbe5
+        BackgroundColor<<m2n>> #fffeed
+}
+
+
+class Dictionary <<entity>> {
+     t_string name
+    
+    
+
+}
+
+
+class Application <<entity>> {
+     t_string name
+     t_string descr
+     t_string id_str
+    
+    
+
+}
+
+
+class AppDictEntry <<entity>> {
+     t_string id_str
+     t_string descr
+     t_str_list group
+    
+    t_key application_id
+    
+
+}
+
+
+AppDictEntry -- Application
+
+class Language <<entity>> {
+     t_string shortname
+     t_string descr
+     t_boolean defaultlang
+    
+    
+
+}
+
+
+class DictEntry <<entity>> {
+     t_string txt
+     t_str_list trans_state
+    
+    t_key language_id
+    
+
+}
+
+
+DictEntry -- Language
+
+
+
+class AppDictEntry_Group <<list>> {
+
+}
+AppDictEntry -- class AppDictEntry_Group
+
+class DictEntry_Trans_state <<list>> {
+
+}
+DictEntry -- class DictEntry_Trans_state
+
+
+
+class LangsForApp <<view>> {
+     t_string app_name
+     t_string lang_shortname
+    
+
+}
+class EntryAppLang <<view>> {
+     t_string app_id
+     t_string lang_shortname
+     t_string txt
+    
+
+}
+
+
+class DictEntryAppDictEntry <<m2n>> {
+t_key dictentry_id
+t_key appdictentry_id
+}
+
+DictEntry -- DictEntryAppDictEntry
+DictEntryAppDictEntry -- AppDictEntry
+
+
+@enduml
+    
